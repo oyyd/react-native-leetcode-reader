@@ -5,23 +5,12 @@ import React, {
   StyleSheet,
 } from 'react-native';
 
-import Icon from 'react-native-vector-icons/MaterialIcons';
-
 class Welcome extends Component {
-
   render() {
     return (
       <View style={styles.container}>
-        <Icon name='rowing' size={30} color='#900'/>
         <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.ios.js
-        </Text>
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
+          Welcome! {this.props.value}
         </Text>
       </View>
     );

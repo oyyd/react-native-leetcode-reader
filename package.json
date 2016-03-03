@@ -8,6 +8,8 @@
   "dependencies": {
     "cheerio-without-node-native": "^0.20.0",
     "react-native": "^0.21.0",
-    "react-native-vector-icons": "^1.2.1"
+    "react-native-vector-icons": "^1.2.1",
+    "react-redux": "^4.4.0",
+    "redux": "^3.3.1"
   }
 }

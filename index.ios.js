@@ -2,41 +2,38 @@
 import React, {
   AppRegistry,
   Component,
-  StyleSheet,
-  Text,
-  View,
-  NavigatorIOS,
 } from 'react-native';
 
-import { requestAlgorithmList, } from './app/data';
+import { createStore, } from 'redux';
+import { Provider, } from 'react-redux';
+import reducers from './app/state/reducers';
 import AppTarBar from './app/AppTarBar';
-import Welcome from './app/Welcome';
 
 class leetcode extends Component {
-  componentDidMount() {
-    requestAlgorithmList().then(problems => {
-      console.log(problems);
+  constructor(props) {
+    super(props);
+
+    this.store = createStore(reducers);
+
+    this.state = {
+      activeRouteTitle: 'Algorithms',
+    };
+  }
+
+  changeRoute(routeTitle) {
+    this.setState({
+      activeRouteTitle: routeTitle,
     });
   }
 
   render() {
     return (
-      <View style={styles.container}>
-        <NavigatorIOS style={styles.container} initialRoute={{
-          component: Welcome,
-          title: 'Welcome',
-          passProps: { test: '123' },
-        }}/>
-        <AppTarBar />
-      </View>
+      <Provider store={this.store}>
+        <AppTarBar activeRouteTitle={this.state.activeRouteTitle}
+          changeRoute={this.changeRoute.bind(this)}/>
+      </Provider>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
 
 AppRegistry.registerComponent('leetcode', () => leetcode);

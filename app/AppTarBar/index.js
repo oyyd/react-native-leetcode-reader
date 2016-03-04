@@ -5,13 +5,16 @@ import React, {
   View,
   StyleSheet,
   PropTypes,
-  NavigatorIOS,
 } from 'react-native';
 
+import { bindActionCreators, } from 'redux';
 import { TabBarItem as Item, } from 'react-native-vector-icons/MaterialIcons';
 import ProblemList from '../ProblemList';
+import { MAIN_COLOR, } from '../style';
 
 const { string, func, } = PropTypes;
+
+const PROBLEM_SET_PREFIX = 'https://leetcode.com/problemset/';
 
 const ITEMS = [{
   title: 'Algorithms',
@@ -27,42 +30,48 @@ const ITEMS = [{
   iconName: 'star-border',
 }];
 
-import Welcome from '../Welcome';
+const nullFunc = () => {};
+
+import ProblemView from '../ProblemView';
 import Problem from '../data/Problem';
 import { connect, } from 'react-redux';
+import { getProblems, } from '../state/actions';
 
 class AppTabBar extends Component {
   constructor(props) {
     super(props);
+
+    this.renderItem = this.renderItem.bind(this);
   }
 
-  renderContent(Constructor, props, title) {
+  renderItem(item, index) {
+    const titleLowerCase = item.title.toLowerCase();
+    // TODO: 'preserve'
+    const requestProblems = titleLowerCase !== 'preserve' ? this.props.getProblems.bind(
+      null,
+      `${PROBLEM_SET_PREFIX}${titleLowerCase}`,
+      titleLowerCase,
+    ): nullFunc;
+
     return (
-      <NavigatorIOS ref='nav'
-        style={styles.container} initialRoute={{
-        component: Constructor,
-        title: title,
-        passProps: props,
-      }}/>
+      <Item key={index}
+        title={item.title}
+        iconName={item.iconName}
+        selected={this.props.activeRouteTitle === item.title}
+        onPress={() => {this.props.changeRoute(item.title)}}>
+        <ProblemView title={item.title}
+          requestProblems={requestProblems}
+          problems={this.props[titleLowerCase]}/>
+      </Item>
     );
   }
 
   render() {
     return (
       <TabBarIOS style={styles.container}
-        tintColor={'#ff0000'}
+        tintColor={MAIN_COLOR}
         barTintColor={'#ffffff'}>
-        {ITEMS.map((item, index) => (
-          <Item key={index}
-            title={item.title}
-            iconName={item.iconName}
-            selected={this.props.activeRouteTitle === item.title}
-            onPress={() => {this.props.changeRoute(item.title)}}>
-            {this.renderContent(ProblemList, {
-              problems: this.props[item.title.toLowerCase()],
-            }, item.title)}
-          </Item>
-        ))}
+        {ITEMS.map(this.renderItem)}
       </TabBarIOS>
     );
   }
@@ -80,9 +89,16 @@ const styles = StyleSheet.create({
 });
 
 function mapState(state) {
+  // TODO: specify properties
   return state;
 }
 
-const ConnectedAppTabBar = connect(mapState)(AppTabBar);
+function mapActions(dispatch) {
+  return bindActionCreators({
+    getProblems,
+  }, dispatch);
+}
+
+const ConnectedAppTabBar = connect(mapState, mapActions)(AppTabBar);
 
 export default ConnectedAppTabBar;

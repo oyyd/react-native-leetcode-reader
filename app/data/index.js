@@ -1,8 +1,8 @@
 import $ from 'cheerio-without-node-native';
 import Problem from './Problem';
 
-export function requestAlgorithmList () {
-  return fetch('https://leetcode.com/problemset/algorithms/').then(res => {
+export function requestProblems (url) {
+  return fetch(url).then(res => {
     return res.text();
   }).then(doc => {
     const list = [];

@@ -10,4 +10,4 @@ export default class Problem {
     this.acceptance = acceptance;
     this.isPremium = isPremium;
   }
-}
+};

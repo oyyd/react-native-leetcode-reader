@@ -4,8 +4,9 @@ import React, {
   Component,
 } from 'react-native';
 
-import { createStore, } from 'redux';
+import { createStore, applyMiddleware, } from 'redux';
 import { Provider, } from 'react-redux';
+import thunk from 'redux-thunk';
 import reducers from './app/state/reducers';
 import AppTarBar from './app/AppTarBar';
 
@@ -13,7 +14,7 @@ class leetcode extends Component {
   constructor(props) {
     super(props);
 
-    this.store = createStore(reducers);
+    this.store = createStore(reducers, applyMiddleware(thunk));
 
     this.state = {
       activeRouteTitle: 'Algorithms',

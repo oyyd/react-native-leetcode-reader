@@ -8,7 +8,7 @@ import { createStore, applyMiddleware, } from 'redux';
 import { Provider, } from 'react-redux';
 import thunk from 'redux-thunk';
 import reducers from './app/state/reducers';
-import AppTarBar from './app/AppTarBar';
+import AppTabBar from './app/AppTabBar';
 
 class leetcode extends Component {
   constructor(props) {
@@ -30,7 +30,7 @@ class leetcode extends Component {
   render() {
     return (
       <Provider store={this.store}>
-        <AppTarBar activeRouteTitle={this.state.activeRouteTitle}
+        <AppTabBar activeRouteTitle={this.state.activeRouteTitle}
           changeRoute={this.changeRoute.bind(this)}/>
       </Provider>
     );

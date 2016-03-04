@@ -80,6 +80,7 @@ class AppTabBar extends Component {
 AppTabBar.propTypes = {
   activeRouteTitle: string.isRequired,
   changeRoute: func.isRequired,
+  getProblems: func.isRequired,
 };
 
 const styles = StyleSheet.create({

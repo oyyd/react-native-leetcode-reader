@@ -12,7 +12,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Problem from '../data/Problem';
 import { MAIN_COLOR, } from '../style';
 
-const { arrayOf, instanceOf, } = PropTypes;
+const { arrayOf, instanceOf, func, } = PropTypes;
 
 class ProblemList extends Component {
   constructor(props) {
@@ -35,13 +35,13 @@ class ProblemList extends Component {
     });
   }
 
-  openProblem(url) {
-    console.log(url);
+  openProblem(title, url) {
+    this.props.navigateToProblemDetail(title, url);
   }
 
   renderRow(problem) {
     return (
-      <TouchableWithoutFeedback onPress={this.openProblem.bind(this, problem.url)}>
+      <TouchableWithoutFeedback onPress={this.openProblem.bind(this, problem.title, problem.url)}>
         <View style={styles.problem}>
           <Text style={styles.id}>{problem.id}</Text>
           <View style={styles.container}>
@@ -69,6 +69,7 @@ class ProblemList extends Component {
 
 ProblemList.propTypes = {
   problems: arrayOf(instanceOf(Problem)),
+  navigateToProblemDetail: func.isRequired,
 };
 
 const styles = StyleSheet.create({

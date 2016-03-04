@@ -1,10 +1,15 @@
 import $ from 'cheerio-without-node-native';
 import Problem from './Problem';
+import ProblemDetail from './ProblemDetail';
 
-export function requestProblems (url) {
+function fetchText(url) {
   return fetch(url).then(res => {
     return res.text();
-  }).then(doc => {
+  });
+}
+
+export function requestProblems (url) {
+  return fetchText(url).then(doc => {
     const list = [];
 
     $(doc).find('#problemList tbody tr').each((index, tr) => {
@@ -35,5 +40,26 @@ export function requestProblems (url) {
     });
 
     return list;
-  })
+  });
+};
+
+export function requestProblemDetail (url) {
+  // TODO: url
+  return fetchText(url).then(doc => {
+    const data = {},
+      $node = $(doc);
+
+    let tmp;
+
+    tmp = $node.find('.question-title > h3').text().split('. ');
+    data.id = parseInt(tmp[0]);
+    data.title = tmp[1];
+    data.totalAccepted = parseInt($node.find('.total-ac > strong').text());
+    tmp = $node.find('.total-submit > strong');
+    data.totalSubmissions = parseInt(tmp.eq(0).text());
+    data.diffculty = tmp.eq(1).text();
+    data.questionContent = $node.find('.question-content').html();
+
+    return new ProblemDetail(data);
+  });
 };

@@ -6,11 +6,12 @@ import React, {
   PropTypes,
   WebView,
   TouchableWithoutFeedback,
+  ActivityIndicatorIOS,
 } from 'react-native';
 
 import { connect, } from 'react-redux';
 import { requestProblemDetail, } from '../data';
-import { MAIN_COLOR, BG_COLOR, } from '../style';
+import { MAIN_COLOR, BG_COLOR, NAV_HEIGHT, TABBAR_HEIGHT, } from '../style';
 import { addProblem, removeProblem, } from '../state/actions';
 
 const { string, func, object, number, } = PropTypes;
@@ -55,8 +56,13 @@ class ProblemDetail extends Component{
 
   render() {
     if (!this.state.problemDetail) {
-      // TODO: loading
-      return null;
+      return (
+        <View style={styles.container}>
+          <ActivityIndicatorIOS style={styles.loading}
+            animating={true}
+            size='small'/>
+        </View>
+      );
     }
 
     const {
@@ -102,9 +108,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // TODO: this seems to be a bug of `NavigatorIOS`
-    paddingVertical: 60,
+    paddingTop: NAV_HEIGHT,
+    paddingBottom: TABBAR_HEIGHT,
     paddingHorizontal: 10,
     flexDirection: 'column',
+  },
+  loading: {
+    flex: 1,
   },
   infoContainer: {
     marginVertical: 12,

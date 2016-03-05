@@ -2,6 +2,7 @@
 import React, {
   AppRegistry,
   Component,
+  StatusBarIOS,
 } from 'react-native';
 
 import { createStore, applyMiddleware, } from 'redux';
@@ -17,6 +18,8 @@ class leetcode extends Component {
     super(props);
 
     this.store = createStore(reducers, applyMiddleware(thunk));
+
+    StatusBarIOS.setStyle('light-content');
 
     (async () => {
       const preservation = await getPreservation();

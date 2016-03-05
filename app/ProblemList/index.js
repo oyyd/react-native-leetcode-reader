@@ -6,11 +6,12 @@ import React, {
   PropTypes,
   StyleSheet,
   TouchableWithoutFeedback,
+  ActivityIndicatorIOS,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Problem from '../data/Problem';
-import { MAIN_COLOR, } from '../style';
+import { MAIN_COLOR, NAV_HEIGHT, TABBAR_HEIGHT, } from '../style';
 
 const { arrayOf, instanceOf, func, } = PropTypes;
 
@@ -61,10 +62,24 @@ class ProblemList extends Component {
   }
 
   render() {
-    return (
-      <ListView dataSource={this.state.dataSource}
-        renderRow={this.renderRow}/>
-    );
+    const { problems, } = this.props;
+
+    if (!Array.isArray(problems) || problems.length === 0) {
+      return (
+        <View style={styles.wrapper}>
+          <ActivityIndicatorIOS style={styles.loading}
+            animating={true}
+            size='small'/>
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.wrapper}>
+          <ListView dataSource={this.state.dataSource}
+            renderRow={this.renderRow}/>
+        </View>
+      );
+    }
   }
 }
 
@@ -74,6 +89,14 @@ ProblemList.propTypes = {
 };
 
 export const styles = StyleSheet.create({
+  wrapper: {
+    paddingTop: NAV_HEIGHT,
+    paddingBottom: TABBAR_HEIGHT,
+    flex: 1,
+  },
+  loading: {
+    flex: 1,
+  },
   problem: {
     flex: 1,
     padding: 10,

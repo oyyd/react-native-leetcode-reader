@@ -7,26 +7,36 @@ import React, {
 
 import Problem from '../data/Problem';
 import ProblemList from '../ProblemList';
+import PreserveProblemList from '../PreserveProblemList';
 import ProblemDetail from '../ProblemDetail';
+import { MAIN_COLOR, BG_COLOR, } from '../style';
 
-const { string, arrayOf, instanceOf, func, } = PropTypes;
+const { string, arrayOf, instanceOf, func, object, } = PropTypes;
 
-function createProblemListRoute(title, problems, navigateToProblemDetail) {
+function createProblemListRoute(
+  title, problems, navigateToProblemDetail, preservation
+) {
+  const isPreservation = !!preservation;
+
   return {
-    component: ProblemList,
+    component: isPreservation ? PreserveProblemList : ProblemList,
     title: title,
-    passProps: {
-      problems,
+    passProps: Object.assign({}, {
       navigateToProblemDetail,
-    },
+    }, isPreservation ? {
+      preservation,
+    } : {
+      problems,
+    }),
   };
 }
 
-function createProblemDetailRoute(title, url) {
+function createProblemDetailRoute(id, title, url) {
   return {
     component: ProblemDetail,
     title,
     passProps: {
+      id,
       url,
     },
   }
@@ -47,30 +57,44 @@ class ProblemView extends Component {
 
   componentWillUpdate(nextProps) {
     // update navigator when problems changed
-    if (this.props.problems === nextProps.problems) {
+    if (this.props.problems === nextProps.problems
+      && this.props.preservation === nextProps.preservation) {
       return ;
     }
 
-    // TODO:
-    this.refs.nav.replace(createProblemListRoute(
+    let newRoute = createProblemListRoute(
       nextProps.title,
       nextProps.problems,
-      this.navigateToProblemDetail
-    ));
+      this.navigateToProblemDetail,
+      nextProps.preservation
+    );
+
+    // TODO: We need a better way to judge route status.
+    // Here, I assume that there can be only two routes at most.
+    if (this.refs.nav.state.routeStack.length === 2) {
+      this.refs.nav.replacePrevious(newRoute);
+    } else {
+      this.refs.nav.replace(newRoute);
+    }
   }
 
-  navigateToProblemDetail(title, url) {
-    this.refs.nav.push(createProblemDetailRoute(title, url));
+  navigateToProblemDetail(id, title, url) {
+    this.refs.nav.push(createProblemDetailRoute(id, title, url));
   }
 
   render() {
     return (
       <NavigatorIOS ref='nav'
+        barTintColor={MAIN_COLOR}
+        tintColor='#fff'
+        titleTextColor='#fff'
+        itemWrapperStyle={styles.itemWrapperStyle}
         style={styles.container} initialRoute={
           createProblemListRoute(
             this.props.title,
             this.props.problems,
-            this.navigateToProblemDetail
+            this.navigateToProblemDetail,
+            this.props.preservation
           )
       }/>
     );
@@ -80,12 +104,17 @@ class ProblemView extends Component {
 ProblemView.propTypes = {
   title: string.isRequired,
   problems: arrayOf(instanceOf(Problem)),
+  preservation: object,
   requestProblems: func.isRequired,
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  itemWrapperStyle: {
+    // TODO:
+    backgroundColor: BG_COLOR,
   },
 });
 

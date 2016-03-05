@@ -19,3 +19,17 @@ export function getProblems(url, type) {
     // TODO: handle error
   };
 };
+
+export function addProblem(problem) {
+  return {
+    type: ACTION_TYPES.ADD_PROBLEM,
+    problem,
+  };
+};
+
+export function removeProblem(id) {
+  return {
+    type: ACTION_TYPES.REMOVE_PROBLEM,
+    id,
+  };
+};

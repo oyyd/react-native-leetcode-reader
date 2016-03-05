@@ -8,21 +8,20 @@ import React, {
   TouchableWithoutFeedback,
 } from 'react-native';
 
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import Problem from '../data/Problem';
-import { MAIN_COLOR, } from '../style';
+import { styles, } from '../ProblemList';
 
-const { arrayOf, instanceOf, func, } = PropTypes;
+const { object, func, } = PropTypes;
 
-class ProblemList extends Component {
+class PreserveProblemList extends Component {
   constructor(props) {
     super(props);
 
     const ds = new ListView.DataSource({
       rowHasChanged: (r1, r2) => r1 !== r2,
     });
+
     this.state = {
-      dataSource: ds.cloneWithRows(props.problems),
+      dataSource: ds.cloneWithRows(Object.values(props.preservation)),
     };
 
     this.renderRow = this.renderRow.bind(this);
@@ -30,7 +29,7 @@ class ProblemList extends Component {
 
   componentWillReceiveProps(newProps) {
     this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(newProps.problems || []),
+      dataSource: this.state.dataSource.cloneWithRows(Object.values(newProps.preservation)),
     });
   }
 
@@ -41,8 +40,8 @@ class ProblemList extends Component {
   renderRow(problem) {
     return (
       <TouchableWithoutFeedback onPress={
-          this.openProblem.bind(this, problem.id, problem.title, problem.url)
-        }>
+        this.openProblem.bind(this, problem.id, problem.title, problem.url)
+      }>
         <View style={styles.problem}>
           <Text style={styles.id}>{problem.id}</Text>
           <View style={styles.container}>
@@ -68,45 +67,9 @@ class ProblemList extends Component {
   }
 }
 
-ProblemList.propTypes = {
-  problems: arrayOf(instanceOf(Problem)),
+PreserveProblemList.propTypes = {
   navigateToProblemDetail: func.isRequired,
+  preservation: object,
 };
 
-export const styles = StyleSheet.create({
-  problem: {
-    flex: 1,
-    padding: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  container: {
-    flex: 8,
-    flexDirection: 'column',
-  },
-  id: {
-    textAlign: 'center',
-    flex: 1,
-    fontSize: 14,
-    marginRight: 10,
-  },
-  title: {
-    color: MAIN_COLOR,
-    flex: 1,
-    fontSize: 14,
-  },
-  subContainer: {
-    paddingVertical: 4,
-    flex: 1,
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderColor: '#dddddd',
-  },
-  subItem: {
-    fontSize: 12,
-    color: '#999999',
-    marginRight: 10,
-  },
-});
-
-export default ProblemList;
+export default PreserveProblemList;

@@ -25,10 +25,12 @@ const ITEMS = [{
 },{
   title: 'Shell',
   iconName: 'indeterminate-check-box',
-},{
+},
+{
   title: 'Preserve',
   iconName: 'star-border',
-}];
+}
+];
 
 const nullFunc = () => {};
 
@@ -47,7 +49,8 @@ class AppTabBar extends Component {
   renderItem(item, index) {
     const titleLowerCase = item.title.toLowerCase();
     // TODO: 'preserve'
-    const requestProblems = titleLowerCase !== 'preserve' ? this.props.getProblems.bind(
+    const isPreservation = titleLowerCase === 'preserve';
+    const requestProblems = (!isPreservation) ? this.props.getProblems.bind(
       null,
       `${PROBLEM_SET_PREFIX}${titleLowerCase}`,
       titleLowerCase,
@@ -61,12 +64,15 @@ class AppTabBar extends Component {
         onPress={() => {this.props.changeRoute(item.title)}}>
         <ProblemView title={item.title}
           requestProblems={requestProblems}
-          problems={this.props[titleLowerCase]}/>
+          preservation={isPreservation ? this.props[titleLowerCase] : null}
+          problems={isPreservation ? null : this.props[titleLowerCase]}/>
       </Item>
     );
   }
 
   render() {
+    console.log('rerender', this.props);
+
     return (
       <TabBarIOS style={styles.container}
         tintColor={MAIN_COLOR}

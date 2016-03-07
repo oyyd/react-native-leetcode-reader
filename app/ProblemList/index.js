@@ -11,7 +11,7 @@ import React, {
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Problem from '../data/Problem';
-import { MAIN_COLOR, NAV_HEIGHT, TABBAR_HEIGHT, } from '../style';
+import { MAIN_COLOR, NAV_HEIGHT, TABBAR_HEIGHT, FONT_GREY, } from '../style';
 
 const { arrayOf, instanceOf, func, } = PropTypes;
 
@@ -40,25 +40,37 @@ class ProblemList extends Component {
   }
 
   renderRow(problem) {
-    return (
-      <TouchableWithoutFeedback onPress={
-          this.openProblem.bind(this, problem.id, problem.title, problem.url)
-        }>
-        <View style={styles.problem}>
-          <Text style={styles.id}>{problem.id}</Text>
-          <View style={styles.container}>
-            <Text style={styles.title}>{problem.title}</Text>
-            <View style={styles.subContainer}>
-              <Text style={styles.subItem}>{problem.diffculty}</Text>
-              <Text style={styles.subItem}>{problem.acceptance}</Text>
-              {problem.isPremium ? (
-                <Icon name='lock' size={12} color='#999999'/>
-              ): null}
-            </View>
+    const titleStyle = problem.isPremium ? [styles.title, {
+      color: FONT_GREY,
+    }] : styles.title;
+
+    const content = (
+      <View style={styles.problem}>
+        <Text style={styles.id}>{problem.id}</Text>
+        <View style={styles.container}>
+          <Text style={titleStyle}>{problem.title}</Text>
+          <View style={styles.subContainer}>
+            <Text style={styles.subItem}>{problem.diffculty}</Text>
+            <Text style={styles.subItem}>{problem.acceptance}</Text>
+            {problem.isPremium ? (
+              <Icon name='lock' size={12} color={FONT_GREY}/>
+            ): null}
           </View>
         </View>
-      </TouchableWithoutFeedback>
+      </View>
     );
+
+    if (problem.isPremium) {
+      return content;
+    } else {
+      return (
+        <TouchableWithoutFeedback onPress={this.openProblem.bind(
+            this, problem.id, problem.title, problem.url
+        )}>
+          {content}
+        </TouchableWithoutFeedback>
+      );
+    }
   }
 
   render() {
@@ -127,7 +139,7 @@ export const styles = StyleSheet.create({
   },
   subItem: {
     fontSize: 12,
-    color: '#999999',
+    color: FONT_GREY,
     marginRight: 10,
   },
 });

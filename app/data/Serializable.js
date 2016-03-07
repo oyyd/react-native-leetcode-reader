@@ -1,8 +1,4 @@
 export default class Serializable {
-  constructor() {
-
-  }
-  
   getSerialization() {
     const obj = {};
 

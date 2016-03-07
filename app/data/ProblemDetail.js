@@ -7,7 +7,8 @@ function getAcceptance (totalAccepted, totalSubmissions) {
 export default class ProblemDetail extends Serializable{
   constructor({
     id, title, totalAccepted, totalSubmissions,
-    diffculty, questionContent
+    diffculty, questionContent, similar, tags,
+    discussURL,
   }) {
     super(arguments[0]);
 
@@ -16,9 +17,12 @@ export default class ProblemDetail extends Serializable{
     this.totalAccepted = totalAccepted;
     this.totalSubmissions = totalSubmissions;
     this.diffculty = diffculty;
-    this.questionContent = questionContent;
+    this.questionContent = questionContent.trim();
+    this.similar = similar;
+    this.tags = tags;
 
     this.acceptance = getAcceptance(this.totalAccepted, this.totalSubmissions);
+    this.discussURL = discussURL;
     this.isPremium = false;
   }
 };

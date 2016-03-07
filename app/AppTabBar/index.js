@@ -71,8 +71,6 @@ class AppTabBar extends Component {
   }
 
   render() {
-    console.log('rerender', this.props);
-
     return (
       <TabBarIOS style={styles.container}
         tintColor={MAIN_COLOR}

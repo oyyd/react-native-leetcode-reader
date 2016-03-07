@@ -8,7 +8,68 @@ function fetchText(url) {
   });
 }
 
-export function requestProblems (url) {
+function removeAnchors($doc) {
+  const $node = $doc.find('.question-content');
+
+  $node.find('a').each((index, ele) => {
+    const $ele = $(ele);
+    const txt = $ele.text();
+    const href = $ele.attr('href');
+
+    if (href !== '/subscribe/') {
+      $ele.replaceWith(`<span role="anchor" data-href="${href}">${txt}</span>`);
+    } else {
+      $ele.parent().remove();
+    }
+  });
+}
+
+function getContent($doc) {
+  return $doc.find('.question-content').html();
+}
+
+function getSimilar($doc) {
+  const similar = [];
+  const $node = $doc.find('#similar').parent();
+  $node.find('[role="anchor"]').each((index, item) => {
+    const $node = $(item);
+    similar.push({
+      text: $node.text(),
+      href: $node.attr('data-href'),
+    });
+  });
+  $node.remove();
+  return similar;
+}
+
+function getTags($doc) {
+  const tags = [];
+  const $node = $doc.find('#tags').parent();
+  $node.find('[role="anchor"]').each((index, item) => {
+    const $node = $(item);
+    tags.push({
+      text: $node.text(),
+      href: $node.attr('data-href'),
+    });
+  });
+  $node.remove();
+  return tags;
+}
+
+function getDiscussURL($doc) {
+  let url = null;
+
+  $doc.find('.action a').each((index, item) => {
+    const $item = $(item);
+    if ($item.text() === 'Discuss') {
+      url = $item.attr('href');
+    }
+  });
+
+  return url;
+}
+
+export function requestProblems(url) {
   return fetchText(url).then(doc => {
     const list = [];
 
@@ -58,7 +119,11 @@ export function requestProblemDetail (url) {
     tmp = $node.find('.total-submit > strong');
     data.totalSubmissions = parseInt(tmp.eq(0).text());
     data.diffculty = tmp.eq(1).text();
-    data.questionContent = $node.find('.question-content').html();
+    removeAnchors($node);
+    data.tags = getTags($node);
+    data.similar = getSimilar($node);
+    data.questionContent = getContent($node);
+    data.discussURL = getDiscussURL($node);
 
     return new ProblemDetail(data);
   });

@@ -9,6 +9,7 @@ import React, {
 } from 'react-native';
 
 import { styles, } from '../ProblemList';
+import NavigationBar from '../NavigationBar';
 
 const { object, func, } = PropTypes;
 
@@ -61,8 +62,11 @@ class PreserveProblemList extends Component {
 
   render() {
     return (
-      <ListView dataSource={this.state.dataSource}
-        renderRow={this.renderRow}/>
+      <View style={styles.container}>
+        <NavigationBar title='Preserve'/>
+        <ListView dataSource={this.state.dataSource}
+          renderRow={this.renderRow}/>
+      </View>
     );
   }
 }

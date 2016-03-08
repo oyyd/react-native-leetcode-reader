@@ -1,5 +1,5 @@
 import React, {
-  NavigatorIOS,
+  Navigator,
   Component,
   PropTypes,
   StyleSheet,
@@ -9,37 +9,13 @@ import Problem from '../data/Problem';
 import ProblemList from '../ProblemList';
 import PreserveProblemList from '../PreserveProblemList';
 import ProblemDetail from '../ProblemDetail';
+import DiscussWebView from '../DiscussWebView';
 import { MAIN_COLOR, BG_COLOR, } from '../style';
 
 const { string, arrayOf, instanceOf, func, object, } = PropTypes;
 
-function createProblemListRoute(
-  title, problems, navigateToProblemDetail, preservation
-) {
-  const isPreservation = !!preservation;
-
-  return {
-    component: isPreservation ? PreserveProblemList : ProblemList,
-    title: title,
-    passProps: Object.assign({}, {
-      navigateToProblemDetail,
-    }, isPreservation ? {
-      preservation,
-    } : {
-      problems,
-    }),
-  };
-}
-
-function createProblemDetailRoute(id, title, url) {
-  return {
-    component: ProblemDetail,
-    title,
-    passProps: {
-      id,
-      url,
-    },
-  }
+function popRoute() {
+  return this.pop();
 }
 
 class ProblemView extends Component {
@@ -53,6 +29,10 @@ class ProblemView extends Component {
     }
 
     this.navigateToProblemDetail = this.navigateToProblemDetail.bind(this);
+    this.openDiscussPage = this.openDiscussPage.bind(this);
+    this.createProblemListRoute = this.createProblemListRoute.bind(this);
+    this.createDiscussRoute = this.createDiscussRoute.bind(this);
+    this.createProblemDetailRoute = this.createProblemDetailRoute.bind(this);
   }
 
   componentWillUpdate(nextProps) {
@@ -62,15 +42,15 @@ class ProblemView extends Component {
       return ;
     }
 
-    let newRoute = createProblemListRoute(
+    let newRoute = this.createProblemListRoute(
       nextProps.title,
       nextProps.problems,
-      this.navigateToProblemDetail,
       nextProps.preservation
     );
 
-    // TODO: We need a better way to judge route status.
-    // Here, I assume that there can be only two routes at most.
+    // TODO: We need a better way to judge and change route status.
+    // Here, I assume that the first route would always be `ProblemList`
+    // which would cause unexpected behavior.
     if (this.refs.nav.state.routeStack.length === 2) {
       this.refs.nav.replacePrevious(newRoute);
     } else {
@@ -78,25 +58,75 @@ class ProblemView extends Component {
     }
   }
 
+  createDiscussRoute(url) {
+    return {
+      component: DiscussWebView,
+      passProps: {
+        url,
+      },
+    };
+  }
+
+  createProblemListRoute(
+    title, problems, preservation
+  ) {
+    const isPreservation = !!preservation;
+    const { navigateToProblemDetail, } = this;
+
+    return {
+      component: isPreservation ? PreserveProblemList : ProblemList,
+      passProps: Object.assign({
+        navigateToProblemDetail,
+      }, isPreservation ? {
+        preservation,
+      } : {
+        problems,
+      }),
+    };
+  }
+
+  createProblemDetailRoute(id, title, url) {
+    const { openDiscussPage, } = this;
+
+    return {
+      component: ProblemDetail,
+      passProps: {
+        title,
+        id,
+        url,
+        openDiscussPage,
+      },
+    }
+  }
+
   navigateToProblemDetail(id, title, url) {
-    this.refs.nav.push(createProblemDetailRoute(id, title, url));
+    this.refs.nav.push(this.createProblemDetailRoute(
+      id, title, url,
+    ));
+  }
+
+  openDiscussPage(url) {
+    this.refs.nav.push(this.createDiscussRoute(url));
   }
 
   render() {
     return (
-      <NavigatorIOS ref='nav'
-        barTintColor={MAIN_COLOR}
-        tintColor='#fff'
-        titleTextColor='#fff'
-        itemWrapperStyle={styles.itemWrapperStyle}
-        style={styles.container} initialRoute={
-          createProblemListRoute(
-            this.props.title,
-            this.props.problems,
-            this.navigateToProblemDetail,
-            this.props.preservation
-          )
-      }/>
+      <Navigator ref='nav'
+        sceneStyle={styles.itemWrapperStyle}
+        style={styles.container}
+        initialRoute={this.createProblemListRoute(
+          this.props.title,
+          this.props.problems,
+          this.props.preservation
+        )}
+        renderScene={(route, navigator) => {
+          const { title, passProps, } = route;
+          const Component = route.component;
+
+          return (
+            <Component {...passProps} popRoute={popRoute.bind(navigator)}/>
+          );
+        }}/>
     );
   }
 }

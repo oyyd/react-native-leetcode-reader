@@ -10,6 +10,7 @@ import React, {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import NavigationBar from '../NavigationBar';
 import Problem from '../data/Problem';
 import { MAIN_COLOR, NAV_HEIGHT, TABBAR_HEIGHT, FONT_GREY, } from '../style';
 
@@ -79,6 +80,7 @@ class ProblemList extends Component {
     if (!Array.isArray(problems) || problems.length === 0) {
       return (
         <View style={styles.wrapper}>
+          <NavigationBar title='list'/>
           <ActivityIndicatorIOS style={styles.loading}
             animating={true}
             size='small'/>
@@ -87,6 +89,7 @@ class ProblemList extends Component {
     } else {
       return (
         <View style={styles.wrapper}>
+          <NavigationBar title='list'/>
           <ListView dataSource={this.state.dataSource}
             renderRow={this.renderRow}/>
         </View>
@@ -102,7 +105,6 @@ ProblemList.propTypes = {
 
 export const styles = StyleSheet.create({
   wrapper: {
-    paddingTop: NAV_HEIGHT,
     paddingBottom: TABBAR_HEIGHT,
     flex: 1,
   },

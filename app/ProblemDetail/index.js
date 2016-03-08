@@ -20,6 +20,7 @@ import { addProblem, removeProblem, } from '../state/actions';
 import composeWebViewContent from './composeWebViewContent';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Panel from './Panel';
+import NavigationBar from '../NavigationBar';
 
 const { string, func, object, number, } = PropTypes;
 
@@ -79,7 +80,8 @@ class ProblemDetail extends Component{
   render() {
     if (!this.state.problemDetail) {
       return (
-        <View style={styles.container}>
+        <View style={styles.wrapper}>
+          <NavigationBar title={this.props.title} onBackBtnPressed={this.props.popRoute}/>
           <ActivityIndicatorIOS style={styles.loading}
             animating={true}
             size='small'/>
@@ -96,54 +98,61 @@ class ProblemDetail extends Component{
     const isPreserved = !!this.props.preserve[id];
 
     return (
-      <ScrollView style={{flex: 1, height: 500,}}
-        automaticallyAdjustContentInsets={false}>
-        <View style={styles.container}>
-          <View style={styles.infoContainer}>
-            <TouchableOpacity style={styles.preserIcon}
-              onPress={this.togglePreservation}>
-              {isPreserved ? (
-                <Icon name='star' size={16} color={PRESERVE_COLOR}/>
-              ) : (
-                <Icon name='star-border' size={16} color={PRESERVE_COLOR}/>
-              )}
-            </TouchableOpacity>
-            <Text style={styles.item}>ac: {totalAccepted}</Text>
-            <Text style={styles.item}>total: {totalSubmissions}</Text>
-            <Text style={[styles.item, {
-              marginRight: 0
-            }]}>diffculty: {diffculty}</Text>
+      <View style={styles.wrapper}>
+        <NavigationBar title={title} onBackBtnPressed={this.props.popRoute}/>
+        <ScrollView style={{flex: 1, height: 500,}}
+          automaticallyAdjustContentInsets={false}>
+          <View style={styles.container}>
+            <View style={styles.infoContainer}>
+              <TouchableOpacity style={styles.preserIcon}
+                onPress={this.togglePreservation}>
+                {isPreserved ? (
+                  <Icon name='star' size={16} color={PRESERVE_COLOR}/>
+                ) : (
+                  <Icon name='star-border' size={16} color={PRESERVE_COLOR}/>
+                )}
+              </TouchableOpacity>
+              <Text style={styles.item}>ac: {totalAccepted}</Text>
+              <Text style={styles.item}>total: {totalSubmissions}</Text>
+              <Text style={[styles.item, {
+                marginRight: 0
+              }]}>diffculty: {diffculty}</Text>
+            </View>
+            {/* TODO: add inline style */}
+            <WebView style={{height: this.state.questionContentHeight,}}
+              scalesPageToFit={false}
+              automaticallyAdjustContentInsets={false}
+              scrollEnabled={false}
+              bounces={false}
+              onNavigationStateChange={this.handleNavigationChange}
+              source={{
+                html: composeWebViewContent(questionContent),
+            }}/>
+            <Panel discussURL={discussURL}
+              openDiscussPage={this.props.openDiscussPage}
+              similar={similar} tags={tags}/>
           </View>
-          {/* TODO: add inline style */}
-          <WebView style={{height: this.state.questionContentHeight,}}
-            scalesPageToFit={false}
-            automaticallyAdjustContentInsets={false}
-            scrollEnabled={false}
-            bounces={false}
-            onNavigationStateChange={this.handleNavigationChange}
-            source={{
-              html: composeWebViewContent(questionContent),
-          }}/>
-          <Panel discussURL={discussURL}
-            similar={similar} tags={tags}/>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
     );
   }
 }
 
 ProblemDetail.propTypes = {
+  title: string.isRequired,
   id: number.isRequired,
   url: string,
   dispatch: func.isRequired,
   preserve: object,
+  openDiscussPage: func.isRequired,
 };
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    // TODO: this seems to be a bug of `NavigatorIOS`
-    paddingTop: NAV_HEIGHT,
     paddingBottom: TABBAR_HEIGHT,
     paddingHorizontal: 10,
     flexDirection: 'column',

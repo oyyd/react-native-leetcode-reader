@@ -10,7 +10,7 @@ import { DISCUSS_GREEN, PRESERVE_COLOR, } from '../../style';
 import Button from '../../Button';
 import TagList from './TagList';
 
-const { string, array, } = PropTypes;
+const { string, array, func, } = PropTypes;
 
 class Panel extends Component {
   constructor(props) {
@@ -22,7 +22,8 @@ class Panel extends Component {
 
     return (
       <View style={styles.container}>
-        <Button text='Discuss' bgColor={DISCUSS_GREEN}/>
+        <Button text='Discuss' bgColor={DISCUSS_GREEN}
+          onPress={this.props.openDiscussPage.bind(this, this.props.discussURL)}/>
         {(Array.isArray(similar) && similar.length) ? (
           <TagList title={'Show Similar Problems'} tags={similar}/>
         ) : null}
@@ -38,6 +39,7 @@ Panel.propTypes = {
   discussURL: string.isRequired,
   similar: array,
   tags: array,
+  openDiscussPage: func.isRequired,
 };
 
 const styles = StyleSheet.create({

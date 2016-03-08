@@ -17,13 +17,21 @@ class Button extends Component {
   }
 
   render() {
-    return (
-      <TouchableOpacity onPress={this.props.onPress}>
+    if (this.props.onPress) {
+      return (
+        <TouchableOpacity onPress={this.props.onPress}>
+          <View style={[styles.container, {backgroundColor: this.props.bgColor}]}>
+            <Text style={styles.text}>{this.props.text}</Text>
+          </View>
+        </TouchableOpacity>
+      );
+    } else {
+      return (
         <View style={[styles.container, {backgroundColor: this.props.bgColor}]}>
           <Text style={styles.text}>{this.props.text}</Text>
         </View>
-      </TouchableOpacity>
-    );
+      );
+    }
   }
 }
 

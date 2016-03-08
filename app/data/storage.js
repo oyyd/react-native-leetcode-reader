@@ -28,16 +28,20 @@ export async function getPreservation() {
 
   try {
     preservation = await AsyncStorage.getItem(KEYS.PRESERVATION);
-    // TODO:
     preservation = JSON.parse(preservation);
-
-    Object.keys(preservation).forEach(id => {
-      preservation[id] = new ProblemDetail(preservation[id]);
-    });
   } catch(e) {
-    // TODO:
+    // TODO: handle error
     console.log(e);
   }
+
+  // no data or invalid data
+  if (!preservation) {
+    preservation = {};
+  }
+
+  Object.keys(preservation).forEach(id => {
+    preservation[id] = new ProblemDetail(preservation[id]);
+  });
 
   return preservation;
 };

@@ -64,8 +64,15 @@ class PreserveProblemList extends Component {
     return (
       <View style={styles.container}>
         <NavigationBar title='Preserve'/>
-        <ListView dataSource={this.state.dataSource}
-          renderRow={this.renderRow}/>
+        {Object.keys(this.props.preservation).length ? (
+          <ListView
+            dataSource={this.state.dataSource}
+            renderRow={this.renderRow}/>
+        ) : (
+          <Text style={preserveProblemListStyle.nullText}>
+            All problems preserved will be shown here.
+          </Text>
+        )}
       </View>
     );
   }
@@ -75,5 +82,14 @@ PreserveProblemList.propTypes = {
   navigateToProblemDetail: func.isRequired,
   preservation: object,
 };
+
+const preserveProblemListStyle = StyleSheet.create({
+  nullText: {
+    fontSize: 16,
+    color: '#CCC',
+    textAlign: 'center',
+    paddingTop: 40,
+  },
+});
 
 export default PreserveProblemList;

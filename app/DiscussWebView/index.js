@@ -4,8 +4,10 @@ import React, {
   PropTypes,
   View,
   StyleSheet,
+  ActivityIndicatorIOS,
 } from 'react-native';
 
+import { BG_COLOR, } from '../style';
 import { DOMAIN, } from '../constants';
 import NavigationBar from '../NavigationBar';
 
@@ -14,6 +16,16 @@ const { string, } = PropTypes;
 class DiscussWebView extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      showLoading: true,
+    };
+  }
+
+  hideLoading() {
+    this.setState({
+      showLoading: false,
+    });
   }
 
   render() {
@@ -22,7 +34,11 @@ class DiscussWebView extends Component {
       <View style={styles.container}>
         <NavigationBar title={'Discuss'}
           onBackBtnPressed={this.props.popRoute}/>
-        <WebView source={{url: `${DOMAIN}${this.props.url}`}}/>
+          {this.state.showLoading ? (
+            <ActivityIndicatorIOS style={styles.indicator} animating={true}/>
+          ) : null}
+        <WebView source={{url: `${DOMAIN}${this.props.url}`}}
+          onLoadEnd={this.hideLoading.bind(this)}/>
       </View>
     );
   }
@@ -34,6 +50,10 @@ DiscussWebView.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    backgroundColor: '#FFF',
+  },
+  indicator: {
     flex: 1,
   },
 });

@@ -45,7 +45,6 @@ class ProblemDetail extends Component{
 
   componentWillMount() {
     if (!this.state.problemDetail) {
-      // TODO: get from persistant data when possible
       requestProblemDetail(`${PREFIX}${this.props.url}`).then(problemDetail => {
         this.setState({
           problemDetail,
@@ -99,19 +98,14 @@ class ProblemDetail extends Component{
 
     return (
       <View style={styles.wrapper}>
-        <NavigationBar title={title} onBackBtnPressed={this.props.popRoute}/>
+        <NavigationBar title={title}
+          onBackBtnPressed={this.props.popRoute}
+          preservationStatus={isPreserved}
+          onPreservationPressed={this.togglePreservation}/>
         <ScrollView style={{flex: 1, height: 500,}}
           automaticallyAdjustContentInsets={false}>
           <View style={styles.container}>
             <View style={styles.infoContainer}>
-              <TouchableOpacity style={styles.preserIcon}
-                onPress={this.togglePreservation}>
-                {isPreserved ? (
-                  <Icon name='star' size={16} color={PRESERVE_COLOR}/>
-                ) : (
-                  <Icon name='star-border' size={16} color={PRESERVE_COLOR}/>
-                )}
-              </TouchableOpacity>
               <Text style={styles.item}>ac: {totalAccepted}</Text>
               <Text style={styles.item}>total: {totalSubmissions}</Text>
               <Text style={[styles.item, {

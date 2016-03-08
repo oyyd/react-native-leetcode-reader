@@ -77,6 +77,7 @@ class ProblemView extends Component {
       component: isPreservation ? PreserveProblemList : ProblemList,
       passProps: Object.assign({
         navigateToProblemDetail,
+        title,
       }, isPreservation ? {
         preservation,
       } : {

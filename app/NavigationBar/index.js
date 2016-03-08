@@ -10,7 +10,7 @@ import React, {
 import { MAIN_COLOR, NAV_HEIGHT, } from '../style';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const { string, func, } = PropTypes;
+const { string, func, bool, } = PropTypes;
 const MAX_TITLE_LENGTH = 20;
 
 class NavigationBar extends Component {
@@ -19,7 +19,7 @@ class NavigationBar extends Component {
   }
 
   render() {
-    let { title, } = this.props;
+    let { title, preservationStatus, } = this.props;
 
     if (title.length > MAX_TITLE_LENGTH) {
       title = title.slice(0, MAX_TITLE_LENGTH) + '...';
@@ -35,7 +35,14 @@ class NavigationBar extends Component {
           ) : null}
         </View>
         <Text style={styles.title}>{title}</Text>
-        <View style={styles.toolIcon}></View>
+        <View style={styles.toolIcon}>
+          {typeof preservationStatus === 'boolean' ? (
+            <TouchableOpacity onPress={this.props.onPreservationPressed}>
+              <Icon name={preservationStatus ? 'star' : 'star-border'}
+                size={24} color={'#fff'}/>
+            </TouchableOpacity>
+          ) : null}
+        </View>
       </View>
     );
   }
@@ -44,6 +51,8 @@ class NavigationBar extends Component {
 NavigationBar.propTypes = {
   title: string.isRequired,
   onBackBtnPressed: func,
+  preservationStatus: bool,
+  onPreservationPressed: func,
 };
 
 const styles = StyleSheet.create({

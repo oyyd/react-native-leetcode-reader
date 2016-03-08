@@ -14,7 +14,7 @@ import NavigationBar from '../NavigationBar';
 import Problem from '../data/Problem';
 import { MAIN_COLOR, NAV_HEIGHT, TABBAR_HEIGHT, FONT_GREY, } from '../style';
 
-const { arrayOf, instanceOf, func, } = PropTypes;
+const { arrayOf, instanceOf, func, string, } = PropTypes;
 
 class ProblemList extends Component {
   constructor(props) {
@@ -75,12 +75,12 @@ class ProblemList extends Component {
   }
 
   render() {
-    const { problems, } = this.props;
+    const { problems, title, } = this.props;
 
     if (!Array.isArray(problems) || problems.length === 0) {
       return (
         <View style={styles.wrapper}>
-          <NavigationBar title='list'/>
+          <NavigationBar title={title}/>
           <ActivityIndicatorIOS style={styles.loading}
             animating={true}
             size='small'/>
@@ -89,7 +89,7 @@ class ProblemList extends Component {
     } else {
       return (
         <View style={styles.wrapper}>
-          <NavigationBar title='list'/>
+          <NavigationBar title={title}/>
           <ListView dataSource={this.state.dataSource}
             renderRow={this.renderRow}/>
         </View>
@@ -99,6 +99,7 @@ class ProblemList extends Component {
 }
 
 ProblemList.propTypes = {
+  title: string.isRequired,
   problems: arrayOf(instanceOf(Problem)),
   navigateToProblemDetail: func.isRequired,
 };

@@ -25,12 +25,10 @@ const ITEMS = [{
 },{
   title: 'Shell',
   iconName: 'indeterminate-check-box',
-},
-{
-  title: 'Preserve',
+},{
+  title: 'Local',
   iconName: 'star-border',
-}
-];
+}];
 
 const nullFunc = () => {};
 
@@ -48,8 +46,8 @@ class AppTabBar extends Component {
 
   renderItem(item, index) {
     const titleLowerCase = item.title.toLowerCase();
-    // TODO: 'preserve'
-    const isPreservation = titleLowerCase === 'preserve';
+    // TODO: use constant
+    const isPreservation = titleLowerCase === 'local';
     const requestProblems = (!isPreservation) ? this.props.getProblems.bind(
       null,
       `${PROBLEM_SET_PREFIX}${titleLowerCase}`,

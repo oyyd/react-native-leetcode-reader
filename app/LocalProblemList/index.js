@@ -13,7 +13,7 @@ import NavigationBar from '../NavigationBar';
 
 const { object, func, } = PropTypes;
 
-class PreserveProblemList extends Component {
+class LocalProblemList extends Component {
   constructor(props) {
     super(props);
 
@@ -63,14 +63,14 @@ class PreserveProblemList extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <NavigationBar title='Preserve'/>
+        <NavigationBar title='Local'/>
         {Object.keys(this.props.preservation).length ? (
           <ListView
             dataSource={this.state.dataSource}
             renderRow={this.renderRow}/>
         ) : (
-          <Text style={preserveProblemListStyle.nullText}>
-            All problems preserved will be shown here.
+          <Text style={localProblemListStyle.nullText}>
+            All local problems will be shown here.
           </Text>
         )}
       </View>
@@ -78,12 +78,12 @@ class PreserveProblemList extends Component {
   }
 }
 
-PreserveProblemList.propTypes = {
+LocalProblemList.propTypes = {
   navigateToProblemDetail: func.isRequired,
   preservation: object,
 };
 
-const preserveProblemListStyle = StyleSheet.create({
+const localProblemListStyle = StyleSheet.create({
   nullText: {
     fontSize: 16,
     color: '#CCC',
@@ -92,4 +92,4 @@ const preserveProblemListStyle = StyleSheet.create({
   },
 });
 
-export default PreserveProblemList;
+export default LocalProblemList;

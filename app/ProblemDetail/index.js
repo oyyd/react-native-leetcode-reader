@@ -29,12 +29,12 @@ const PREFIX = 'https://leetcode.com';
 
 class ProblemDetail extends Component{
   constructor(props) {
-    const { id, preserve, } = props;
+    const { id, local, } = props;
 
     super(props);
 
     this.state = {
-      problemDetail: preserve[id] ? preserve[id] : null,
+      problemDetail: local[id] ? local[id] : null,
       questionContentHeight: 0,
     };
     this.hasMounted = true;
@@ -61,7 +61,7 @@ class ProblemDetail extends Component{
     const { dispatch, } = this.props;
     const { problemDetail, } = this.state;
 
-    if (this.props.preserve[problemDetail.id]) {
+    if (this.props.local[problemDetail.id]) {
       dispatch(removeProblem(problemDetail.id));
     } else {
       dispatch(addProblem(problemDetail));
@@ -94,13 +94,13 @@ class ProblemDetail extends Component{
       questionContent, discussURL,
       similar, tags,
     } = this.state.problemDetail;
-    const isPreserved = !!this.props.preserve[id];
+    const isSaved = !!this.props.local[id];
 
     return (
       <View style={styles.wrapper}>
         <NavigationBar title={title}
           onBackBtnPressed={this.props.popRoute}
-          preservationStatus={isPreserved}
+          preservationStatus={isSaved}
           onPreservationPressed={this.togglePreservation}/>
         <ScrollView style={{flex: 1, height: 500,}}
           automaticallyAdjustContentInsets={false}>
@@ -137,7 +137,7 @@ ProblemDetail.propTypes = {
   id: number.isRequired,
   url: string,
   dispatch: func.isRequired,
-  preserve: object,
+  local: object,
   openDiscussPage: func.isRequired,
 };
 
@@ -169,9 +169,9 @@ const styles = StyleSheet.create({
   },
 });
 
-function mapState({preserve}) {
+function mapState({local}) {
   return {
-    preserve,
+    local,
   };
 }
 

@@ -7,7 +7,7 @@ const defaultState = {
   algorithms: [],
   database: [],
   shell: [],
-  preserve: {},
+  local: {},
 };
 
 export const ACTION_TYPES = {
@@ -41,17 +41,17 @@ export default function problems(state = defaultState, action) {
       });
     case ACTION_TYPES.ADD_PROBLEM:
       tmp = update(state, {
-        preserve: {
+        local: {
           [action.problem.id]: {$set: action.problem},
         },
       });
-      savePreservation(tmp.preserve);
+      savePreservation(tmp.local);
       return tmp;
     case ACTION_TYPES.REMOVE_PROBLEM:
       tmp = update(state, {
-        preserve: {$set: deleteObjectProp(state.preserve, action.id)},
+        local: {$set: deleteObjectProp(state.local, action.id)},
       });
-      savePreservation(tmp.preserve);
+      savePreservation(tmp.local);
       return tmp;
     default:
       return state;

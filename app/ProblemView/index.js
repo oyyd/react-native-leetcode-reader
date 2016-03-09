@@ -7,7 +7,7 @@ import React, {
 
 import Problem from '../data/Problem';
 import ProblemList from '../ProblemList';
-import PreserveProblemList from '../PreserveProblemList';
+import LocalProblemList from '../LocalProblemList';
 import ProblemDetail from '../ProblemDetail';
 import DiscussWebView from '../DiscussWebView';
 import { MAIN_COLOR, BG_COLOR, } from '../style';
@@ -74,7 +74,7 @@ class ProblemView extends Component {
     const { navigateToProblemDetail, } = this;
 
     return {
-      component: isPreservation ? PreserveProblemList : ProblemList,
+      component: isPreservation ? LocalProblemList : ProblemList,
       passProps: Object.assign({
         navigateToProblemDetail,
         title,

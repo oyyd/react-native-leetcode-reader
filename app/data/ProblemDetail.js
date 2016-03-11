@@ -10,7 +10,7 @@ export default class ProblemDetail extends Serializable{
     diffculty, questionContent, similar, tags,
     discussURL,
   }) {
-    super(arguments[0]);
+    super();
 
     this.id = typeof id === 'number' ? id : parseInt(id);
     this.title = title;

@@ -9,12 +9,18 @@ import React, {
   ActivityIndicatorIOS,
 } from 'react-native';
 
+import { connect, } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import NavigationBar from '../NavigationBar';
 import Problem from '../data/Problem';
 import { MAIN_COLOR, NAV_HEIGHT, TABBAR_HEIGHT, FONT_GREY, } from '../style';
+import transform from './transform';
+import { changeTransformer, } from '../state/actions';
 
-const { arrayOf, instanceOf, func, string, } = PropTypes;
+const {
+  arrayOf, instanceOf, func, string,
+  object,
+} = PropTypes;
 
 class ProblemList extends Component {
   constructor(props) {
@@ -23,21 +29,37 @@ class ProblemList extends Component {
     const ds = new ListView.DataSource({
       rowHasChanged: (r1, r2) => r1 !== r2,
     });
+
     this.state = {
-      dataSource: ds.cloneWithRows(props.problems),
+      dataSource: ds.cloneWithRows(
+        transform(props.problems, props.transformer)
+      ),
     };
 
     this.renderRow = this.renderRow.bind(this);
   }
 
   componentWillReceiveProps(newProps) {
-    this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(newProps.problems || []),
-    });
+    // TODO: It seems that each time a new component will be
+    // created instead of updating a component.
+
+    // this.setState({
+    //   dataSource: this.state.dataSource.cloneWithRows(
+    //     transform(newProps.problems, newProps.transformer)
+    //   ),
+    // });
   }
 
   openProblem(id, title, url) {
     this.props.navigateToProblemDetail(id, title, url);
+  }
+
+  dispatchChangeTransformer(value) {
+    this.props.dispatch(changeTransformer(
+      this.props.title.toLowerCase(),
+      'orderType',
+      value
+    ));
   }
 
   renderRow(problem) {
@@ -66,7 +88,7 @@ class ProblemList extends Component {
     } else {
       return (
         <TouchableWithoutFeedback onPress={this.openProblem.bind(
-            this, problem.id, problem.title, problem.url
+          this, problem.id, problem.title, problem.url
         )}>
           {content}
         </TouchableWithoutFeedback>
@@ -76,6 +98,8 @@ class ProblemList extends Component {
 
   render() {
     const { problems, title, } = this.props;
+
+    console.log('rerender');
 
     if (!Array.isArray(problems) || problems.length === 0) {
       return (
@@ -89,8 +113,12 @@ class ProblemList extends Component {
     } else {
       return (
         <View style={styles.wrapper}>
-          <NavigationBar title={title}/>
+          <NavigationBar title={title}
+            showListFilter={true}
+            onFilterChange={this.dispatchChangeTransformer.bind(this)}/>
+          {/* TODO: ListView here has a strange `paddingTop`*/}
           <ListView dataSource={this.state.dataSource}
+            automaticallyAdjustContentInsets={false}
             renderRow={this.renderRow}/>
         </View>
       );
@@ -102,19 +130,22 @@ ProblemList.propTypes = {
   title: string.isRequired,
   problems: arrayOf(instanceOf(Problem)),
   navigateToProblemDetail: func.isRequired,
+  transformer: object,
+  dispatch: func.isRequired,
 };
 
 export const styles = StyleSheet.create({
   wrapper: {
-    paddingBottom: TABBAR_HEIGHT,
     flex: 1,
+    paddingBottom: TABBAR_HEIGHT,
   },
   loading: {
     flex: 1,
   },
   problem: {
     flex: 1,
-    padding: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -138,7 +169,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     borderBottomWidth: 1,
-    borderColor: '#dddddd',
+    borderColor: '#DDDDDD',
   },
   subItem: {
     fontSize: 12,
@@ -147,4 +178,6 @@ export const styles = StyleSheet.create({
   },
 });
 
-export default ProblemList;
+const ConnectedProblemList = connect()(ProblemList);
+
+export default ConnectedProblemList;

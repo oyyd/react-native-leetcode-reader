@@ -8,8 +8,11 @@ import React, {
   TouchableWithoutFeedback,
 } from 'react-native';
 
+import { connect, } from 'react-redux';
 import { styles, } from '../ProblemList';
 import NavigationBar from '../NavigationBar';
+import transform from '../ProblemList/transform';
+import { changeTransformer, } from '../state/actions';
 
 const { object, func, } = PropTypes;
 
@@ -21,21 +24,38 @@ class LocalProblemList extends Component {
       rowHasChanged: (r1, r2) => r1 !== r2,
     });
 
+    console.log('props.preservation', props.preservation);
+
     this.state = {
-      dataSource: ds.cloneWithRows(Object.values(props.preservation)),
+      dataSource: ds.cloneWithRows(
+        transform(Object.values(props.preservation), props.transformer)
+      ),
     };
 
     this.renderRow = this.renderRow.bind(this);
   }
 
   componentWillReceiveProps(newProps) {
-    this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(Object.values(newProps.preservation)),
-    });
+    // TODO: It seems that each time a new component will be
+    // created instead of updating a component.
+
+    // this.setState({
+    //   dataSource: this.state.dataSource.cloneWithRows(
+    //     transform(Object.values(newProps.preservation), newProps.transformer)
+    //   ),
+    // });
   }
 
   openProblem(id, title, url) {
     this.props.navigateToProblemDetail(id, title, url);
+  }
+
+  dispatchChangeTransformer(value) {
+    this.props.dispatch(changeTransformer(
+      this.props.title.toLowerCase(),
+      'orderType',
+      value
+    ));
   }
 
   renderRow(problem) {
@@ -62,10 +82,12 @@ class LocalProblemList extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <NavigationBar title='Local'/>
+      <View style={styles.wrapper}>
+        <NavigationBar title='Local'
+          showListFilter={true}
+          onFilterChange={this.dispatchChangeTransformer.bind(this)}/>
         {Object.keys(this.props.preservation).length ? (
-          <ListView
+          <ListView automaticallyAdjustContentInsets={false}
             dataSource={this.state.dataSource}
             renderRow={this.renderRow}/>
         ) : (
@@ -81,6 +103,8 @@ class LocalProblemList extends Component {
 LocalProblemList.propTypes = {
   navigateToProblemDetail: func.isRequired,
   preservation: object,
+  transformer: object.isRequired,
+  dispatch: func.isRequired,
 };
 
 const localProblemListStyle = StyleSheet.create({
@@ -92,4 +116,6 @@ const localProblemListStyle = StyleSheet.create({
   },
 });
 
-export default LocalProblemList;
+const ConnectLocalProblemList = connect()(LocalProblemList);
+
+export default ConnectLocalProblemList;

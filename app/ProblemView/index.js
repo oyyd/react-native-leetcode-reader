@@ -37,15 +37,16 @@ class ProblemView extends Component {
 
   componentWillUpdate(nextProps) {
     // update navigator when problems changed
-    if (this.props.problems === nextProps.problems
-      && this.props.preservation === nextProps.preservation) {
-      return ;
-    }
+    // if (this.props.problems === nextProps.problems
+    //   && this.props.preservation === nextProps.preservation) {
+    //   return ;
+    // }
 
     let newRoute = this.createProblemListRoute(
       nextProps.title,
       nextProps.problems,
-      nextProps.preservation
+      nextProps.preservation,
+      nextProps.transformer
     );
 
     // TODO: We need a better way to judge and change route status.
@@ -68,7 +69,7 @@ class ProblemView extends Component {
   }
 
   createProblemListRoute(
-    title, problems, preservation
+    title, problems, preservation, transformer
   ) {
     const isPreservation = !!preservation;
     const { navigateToProblemDetail, } = this;
@@ -78,6 +79,7 @@ class ProblemView extends Component {
       passProps: Object.assign({
         navigateToProblemDetail,
         title,
+        transformer
       }, isPreservation ? {
         preservation,
       } : {
@@ -118,7 +120,8 @@ class ProblemView extends Component {
         initialRoute={this.createProblemListRoute(
           this.props.title,
           this.props.problems,
-          this.props.preservation
+          this.props.preservation,
+          this.props.transformer
         )}
         renderScene={(route, navigator) => {
           const { title, passProps, } = route;
@@ -137,6 +140,7 @@ ProblemView.propTypes = {
   problems: arrayOf(instanceOf(Problem)),
   preservation: object,
   requestProblems: func.isRequired,
+  transformer: object.isRequired,
 };
 
 const styles = StyleSheet.create({

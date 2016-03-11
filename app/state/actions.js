@@ -33,3 +33,10 @@ export function removeProblem(id) {
     id,
   };
 };
+
+export function changeTransformer(title, key, value) {
+  return {
+    type: ACTION_TYPES.CHANGE_TRANSFORMER,
+    title, key, value,
+  };
+};

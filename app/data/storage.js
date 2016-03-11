@@ -23,25 +23,25 @@ export async function savePreservation(preservation) {
   }
 };
 
-export async function getPreservation() {
-  let preservation = null;
+export async function getLocalProblems() {
+  let localProblems = null;
 
   try {
-    preservation = await AsyncStorage.getItem(KEYS.PRESERVATION);
-    preservation = JSON.parse(preservation);
+    localProblems = await AsyncStorage.getItem(KEYS.PRESERVATION);
+    localProblems = JSON.parse(localProblems);
   } catch(e) {
     // TODO: handle error
     console.log(e);
   }
 
   // no data or invalid data
-  if (!preservation) {
-    preservation = {};
+  if (!localProblems) {
+    localProblems = {};
   }
 
-  Object.keys(preservation).forEach(id => {
-    preservation[id] = new ProblemDetail(preservation[id]);
+  Object.keys(localProblems).forEach(id => {
+    localProblems[id] = new ProblemDetail(localProblems[id]);
   });
 
-  return preservation;
+  return localProblems;
 };

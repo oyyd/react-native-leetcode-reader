@@ -10,7 +10,7 @@ import { Provider, } from 'react-redux';
 import thunk from 'redux-thunk';
 import reducers from './app/state/reducers';
 import AppTabBar from './app/AppTabBar';
-import { getPreservation, } from './app/data/storage';
+import { getLocalProblems, } from './app/data/storage';
 import { setProblems, } from './app/state/actions';
 
 class leetcode extends Component {
@@ -22,14 +22,15 @@ class leetcode extends Component {
     StatusBarIOS.setStyle('light-content');
 
     (async () => {
-      const preservation = await getPreservation();
+      const localProblems = await getLocalProblems();
       // TODO: const 'preserve'
-      this.store.dispatch(setProblems(preservation, 'preserve'));
+      this.store.dispatch(setProblems(localProblems, 'local'));
     })();
 
     this.state = {
-      activeRouteTitle: 'Preserve',
+      // TODO:
       // activeRouteTitle: 'Algorithms',
+      activeRouteTitle: 'Local',
     };
   }
 

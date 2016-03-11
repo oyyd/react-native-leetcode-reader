@@ -9,8 +9,12 @@ import React, {
 
 import { bindActionCreators, } from 'redux';
 import { TabBarItem as Item, } from 'react-native-vector-icons/MaterialIcons';
-import ProblemList from '../ProblemList';
 import { MAIN_COLOR, } from '../style';
+import ProblemView from '../ProblemView';
+import Problem from '../data/Problem';
+import { connect, } from 'react-redux';
+import { getProblems, } from '../state/actions';
+
 
 const { string, func, } = PropTypes;
 
@@ -31,11 +35,6 @@ const ITEMS = [{
 }];
 
 const nullFunc = () => {};
-
-import ProblemView from '../ProblemView';
-import Problem from '../data/Problem';
-import { connect, } from 'react-redux';
-import { getProblems, } from '../state/actions';
 
 class AppTabBar extends Component {
   constructor(props) {
@@ -63,7 +62,8 @@ class AppTabBar extends Component {
         <ProblemView title={item.title}
           requestProblems={requestProblems}
           preservation={isPreservation ? this.props[titleLowerCase] : null}
-          problems={isPreservation ? null : this.props[titleLowerCase]}/>
+          problems={isPreservation ? null : this.props[titleLowerCase]}
+          transformer={this.props[`${titleLowerCase}Transformer`]}/>
       </Item>
     );
   }
@@ -91,9 +91,18 @@ const styles = StyleSheet.create({
   },
 });
 
-function mapState(state) {
-  // TODO: specify properties
-  return state;
+function mapState({
+  algorithms, algorithmsTransformer,
+  database, databaseTransformer,
+  shell, shellTransformer,
+  local, localTransformer,
+}) {
+  return {
+    algorithms, algorithmsTransformer,
+    database, databaseTransformer,
+    shell, shellTransformer,
+    local, localTransformer,
+  };
 }
 
 function mapActions(dispatch) {

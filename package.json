@@ -1,5 +1,12 @@
 {
   "name": "LeetCodeReader",
+  "description": "Read LeetCode problems in your iOS devices and save them at local.",
+  "author": "Ouyang Yadong <oyydoibh@gmail.com>",
+  "keywords": [
+    "react native",
+    "leetcode",
+    "ios"
+  ],
   "version": "0.0.1",
   "private": true,
   "scripts": {

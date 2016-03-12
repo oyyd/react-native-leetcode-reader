@@ -6,14 +6,16 @@ import React, {
   PropTypes,
   TouchableOpacity,
   ActionSheetIOS,
+  TextInput,
+  Animated,
 } from 'react-native';
 
 import { ORDER_TYPE_NAMES, } from '../ProblemList/transform';
-import { MAIN_COLOR, NAV_HEIGHT, } from '../style';
+import { MAIN_COLOR, NAV_HEIGHT, BG_COLOR, } from '../style';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const { string, func, bool, } = PropTypes;
-const MAX_TITLE_LENGTH = 20;
+const MAX_TITLE_LENGTH = 19;
 const ICON_SIZE = 24;
 const ICON_COLOR = '#FFFFFF';
 const ACTION_SHEET_OPTIONS = {
@@ -27,14 +29,50 @@ const ACTION_SHEET_OPTIONS = {
 class NavigationBar extends Component {
   constructor(props) {
     super(props);
+
+    this.inputWrapperWidth = 0;
+
+    this.state = {
+      showSearchInput: false,
+      searchInputWidth: new Animated.Value(100),
+    };
+
+    this.changeOrderType = this.changeOrderType.bind(this);
+    this.changeText = this.changeText.bind(this);
+    this.toggleSearchInput = this.toggleSearchInput.bind(this);
+  }
+
+  changeText(text) {
+    if (this.props.changeSearchString) {
+      this.props.changeSearchString(text);
+    }
   }
 
   changeOrderType() {
     ActionSheetIOS.showActionSheetWithOptions(ACTION_SHEET_OPTIONS, index => {
-      if (this.props.onFilterChange) {
-        this.props.onFilterChange(Object.keys(ORDER_TYPE_NAMES)[index]);
+      if (this.props.changeOrderType) {
+        this.props.changeOrderType(Object.keys(ORDER_TYPE_NAMES)[index]);
       }
     });
+  }
+
+  toggleSearchInput() {
+    this.setState({
+      showSearchInput: !this.state.showSearchInput,
+    });
+
+    if (this.state.showSearchInput) {
+      this.refs.center.measure((ox, oy, width) => {
+        Animated.spring(
+          this.state.searchInputWidth, {
+            toValue: width,
+          }
+        ).start();
+      })
+    } else {
+      this.state.searchInputWidth.setValue(0);
+      this.changeText(null);
+    }
   }
 
   render() {
@@ -53,26 +91,36 @@ class NavigationBar extends Component {
             </TouchableOpacity>
           ) : null}
         </View>
-        <Text style={styles.title}>{title}</Text>
-        {showListFilter ? (
-          <View style={styles.filterContainer}>
-            <TouchableOpacity>
-              <Icon name='search' size={ICON_SIZE} color={ICON_COLOR}/>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={this.changeOrderType.bind(this)}>
-              {/* TODO: icon name */}
-              <Icon name='swap-vert' size={ICON_SIZE} color={ICON_COLOR}/>
-            </TouchableOpacity>
-          </View>
-        ) : null}
-        {typeof preservationStatus === 'boolean' ? (
-          <View style={styles.toolIcon}>
+        <View ref='center' style={styles.center}>
+          {this.state.showSearchInput ? (
+            <Animated.View style={{ width: this.state.searchInputWidth}}>
+              <TextInput onChangeText={this.changeText}
+                value={this.props.searchString}
+                style={styles.searchInput}/>
+            </Animated.View>
+          ) : (
+            <Text style={styles.title}>{title}</Text>
+          )}
+        </View>
+        <View style={styles.toolIcon}>
+          {typeof preservationStatus === 'boolean' ? (
             <TouchableOpacity onPress={this.props.onPreservationPressed}>
               <Icon name={preservationStatus ? 'star' : 'star-border'}
                 size={ICON_SIZE} color={ICON_COLOR}/>
             </TouchableOpacity>
-          </View>
-        ) : null}
+          ) : null}
+          {showListFilter ? (
+            <View style={styles.filters}>
+              <TouchableOpacity onPress={this.toggleSearchInput}>
+                <Icon name='search' size={ICON_SIZE} color={ICON_COLOR}/>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={this.changeOrderType}>
+                {/* TODO: icon name */}
+                <Icon name='swap-vert' size={ICON_SIZE} color={ICON_COLOR}/>
+              </TouchableOpacity>
+            </View>
+          ) : null}
+        </View>
       </View>
     );
   }
@@ -84,7 +132,9 @@ NavigationBar.propTypes = {
   preservationStatus: bool,
   onPreservationPressed: func,
   showListFilter: bool,
-  onFilterChange: func,
+  changeOrderType: func,
+  searchString: string,
+  changeSearchString: func,
 };
 
 NavigationBar.defaultProps = {
@@ -103,20 +153,35 @@ const styles = StyleSheet.create({
   iconWrapper: {
     flex: 2,
   },
+  center: {
+    flex: 7.5,
+  },
   title: {
-    flex: 8,
     fontSize: 18,
     color: '#FFF',
     textAlign: 'center',
+  },
+  searchInput: {
+    textAlign: 'center',
+    color: '#999',
+    fontSize: 14,
+    height: ICON_SIZE,
+    borderRadius: 10,
+    backgroundColor: BG_COLOR,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    marginTop: 4,
   },
   toolIcon: {
     flex: 2,
     alignItems: 'flex-end',
   },
-  filterContainer: {
-    flex: 2,
+  filters: {
     flexDirection: 'row',
     alignItems: 'flex-end',
+    position: 'absolute',
+    right: 0,
+    top: -10,
   },
 });
 

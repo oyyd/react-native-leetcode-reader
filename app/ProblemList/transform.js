@@ -1,7 +1,7 @@
 const DIFFCULTY_PIORITY = {
-  'easy': 0,
-  'normal': 1,
-  'hard': 2,
+  'Easy': 0,
+  'Medium': 1,
+  'Hard': 2,
 };
 
 export const ORDER_TYPES = {
@@ -28,11 +28,11 @@ const ORDER_SORT_FUNCS = {
   ACCEPTANCE_ASC: (problemA, problemB) =>
     (parseAcceptance(problemA.acceptance) > parseAcceptance(problemB.acceptance)) ? 1 : -1,
   ACCEPTANCE_DESC: (problemA, problemB) =>
-    (parseAcceptance(problemA.acceptance) > parseAcceptance(problemB.acceptance)) ? 1 : -1,
+    (parseAcceptance(problemA.acceptance) < parseAcceptance(problemB.acceptance)) ? 1 : -1,
   DIFFCULTY_ASC: (problemA, problemB) =>
-    DIFFCULTY_PIORITY[problemA.diffculty] > DIFFCULTY_PIORITY[problemB.diffculty],
+    DIFFCULTY_PIORITY[problemA.diffculty] > DIFFCULTY_PIORITY[problemB.diffculty] ? 1 : -1,
   DIFFCULTY_DESC: (problemA, problemB) =>
-    DIFFCULTY_PIORITY[problemA.diffculty] < DIFFCULTY_PIORITY[problemB.diffculty],
+    DIFFCULTY_PIORITY[problemA.diffculty] < DIFFCULTY_PIORITY[problemB.diffculty] ? 1 : -1,
 };
 
 function containCharsInOrder(str, charStr) {
@@ -40,6 +40,9 @@ function containCharsInOrder(str, charStr) {
   if (!str || !charStr) {
     return true;
   }
+
+  str = str.toLowerCase();
+  charStr = charStr.toLowerCase().replace(/\s/g, '');
 
   let index = 0,
     i,

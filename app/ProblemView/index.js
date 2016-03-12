@@ -37,22 +37,14 @@ class ProblemView extends Component {
 
   componentWillUpdate(nextProps) {
     // update navigator when problems changed
-    // if (this.props.problems === nextProps.problems
-    //   && this.props.preservation === nextProps.preservation) {
-    //   return ;
-    // }
+    let newRoute = this.refs.nav.getCurrentRoutes()[0];
+    newRoute.passProps.problems = nextProps.problems;
+    newRoute.passProps.preservation = nextProps.preservation;
+    newRoute.passProps.transformer = nextProps.transformer;
 
-    let newRoute = this.createProblemListRoute(
-      nextProps.title,
-      nextProps.problems,
-      nextProps.preservation,
-      nextProps.transformer
-    );
-
-    // TODO: We need a better way to judge and change route status.
-    // Here, I assume that the first route would always be `ProblemList`
-    // which would cause unexpected behavior.
-    if (this.refs.nav.state.routeStack.length === 2) {
+    // TODO: Here, I assume that the first route would always be `ProblemList`
+    // which may cause unexpected behavior.
+    if (this.refs.nav.getCurrentRoutes().length === 2) {
       this.refs.nav.replacePrevious(newRoute);
     } else {
       this.refs.nav.replace(newRoute);

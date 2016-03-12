@@ -3,37 +3,8 @@ import Problem from '../data/Problem';
 
 import { savePreservation, } from '../data/storage';
 
-// TODO: remove mock data
-// let i = 0;
-//
-// function createMockProblemDetail() {
-//   i++;
-//
-//   return new Problem({
-//     id: i, title: String(i), url: '/test',
-//     diffculty: 'easy', acceptance: '10.0%',
-//     isPremium: false,
-//   });
-// }
-//
-// const mockData = [];
-//
-// let j;
-//
-// for (j = 0; j < 10; j++) {
-//   mockData.push(createMockProblemDetail());
-// }
-//
-// let mockDataCopy = mockData.slice(0);
-// let mockLocalData = {};
-//
-// Object.keys(mockDataCopy).map(item => {
-//   mockLocalData[item.id] = item;
-// });
-
 const defaultState = {
   algorithms: [],
-  // algorithms: mockData,
   algorithmsTransformer: {
     orderType: null,
     searchString: null,
@@ -53,7 +24,6 @@ const defaultState = {
     orderType: null,
     searchString: null,
   },
-  // TODO: mock end
 };
 
 export const ACTION_TYPES = {

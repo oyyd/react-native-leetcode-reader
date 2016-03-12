@@ -24,8 +24,6 @@ class LocalProblemList extends Component {
       rowHasChanged: (r1, r2) => r1 !== r2,
     });
 
-    console.log('props.preservation', props.preservation);
-
     this.state = {
       dataSource: ds.cloneWithRows(
         transform(Object.values(props.preservation), props.transformer)
@@ -36,24 +34,21 @@ class LocalProblemList extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    // TODO: It seems that each time a new component will be
-    // created instead of updating a component.
-
-    // this.setState({
-    //   dataSource: this.state.dataSource.cloneWithRows(
-    //     transform(Object.values(newProps.preservation), newProps.transformer)
-    //   ),
-    // });
+    this.setState({
+      dataSource: this.state.dataSource.cloneWithRows(
+        transform(Object.values(newProps.preservation), newProps.transformer)
+      ),
+    });
   }
 
   openProblem(id, title, url) {
     this.props.navigateToProblemDetail(id, title, url);
   }
 
-  dispatchChangeTransformer(value) {
+  dispatchChangeTransformer(type, value) {
     this.props.dispatch(changeTransformer(
       this.props.title.toLowerCase(),
-      'orderType',
+      type,
       value
     ));
   }
@@ -84,8 +79,10 @@ class LocalProblemList extends Component {
     return (
       <View style={styles.wrapper}>
         <NavigationBar title='Local'
+          searchString={this.props.transformer.searchString}
           showListFilter={true}
-          onFilterChange={this.dispatchChangeTransformer.bind(this)}/>
+          changeOrderType={this.dispatchChangeTransformer.bind(this, 'orderType')}
+          changeSearchString={this.dispatchChangeTransformer.bind(this, 'searchString')}/>
         {Object.keys(this.props.preservation).length ? (
           <ListView automaticallyAdjustContentInsets={false}
             dataSource={this.state.dataSource}

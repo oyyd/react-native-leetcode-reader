@@ -40,24 +40,21 @@ class ProblemList extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    // TODO: It seems that each time a new component will be
-    // created instead of updating a component.
-
-    // this.setState({
-    //   dataSource: this.state.dataSource.cloneWithRows(
-    //     transform(newProps.problems, newProps.transformer)
-    //   ),
-    // });
+    this.setState({
+      dataSource: this.state.dataSource.cloneWithRows(
+        transform(newProps.problems, newProps.transformer)
+      ),
+    });
   }
 
   openProblem(id, title, url) {
     this.props.navigateToProblemDetail(id, title, url);
   }
 
-  dispatchChangeTransformer(value) {
+  dispatchChangeTransformer(type, value) {
     this.props.dispatch(changeTransformer(
       this.props.title.toLowerCase(),
-      'orderType',
+      type,
       value
     ));
   }
@@ -99,8 +96,6 @@ class ProblemList extends Component {
   render() {
     const { problems, title, } = this.props;
 
-    console.log('rerender');
-
     if (!Array.isArray(problems) || problems.length === 0) {
       return (
         <View style={styles.wrapper}>
@@ -113,9 +108,11 @@ class ProblemList extends Component {
     } else {
       return (
         <View style={styles.wrapper}>
-          <NavigationBar title={title}
+          <NavigationBar title='Local'
+            searchString={this.props.transformer.searchString}
             showListFilter={true}
-            onFilterChange={this.dispatchChangeTransformer.bind(this)}/>
+            changeOrderType={this.dispatchChangeTransformer.bind(this, 'orderType')}
+            changeSearchString={this.dispatchChangeTransformer.bind(this, 'searchString')}/>
           {/* TODO: ListView here has a strange `paddingTop`*/}
           <ListView dataSource={this.state.dataSource}
             automaticallyAdjustContentInsets={false}

@@ -94,7 +94,7 @@ class ProblemList extends Component {
   }
 
   render() {
-    const { problems, title, } = this.props;
+    const { problems, title, transformer, } = this.props;
 
     if (!Array.isArray(problems) || problems.length === 0) {
       return (
@@ -108,8 +108,8 @@ class ProblemList extends Component {
     } else {
       return (
         <View style={styles.wrapper}>
-          <NavigationBar title='Local'
-            searchString={this.props.transformer.searchString}
+          <NavigationBar title={title}
+            searchString={transformer.searchString}
             showListFilter={true}
             changeOrderType={this.dispatchChangeTransformer.bind(this, 'orderType')}
             changeSearchString={this.dispatchChangeTransformer.bind(this, 'searchString')}/>

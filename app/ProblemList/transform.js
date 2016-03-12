@@ -14,12 +14,12 @@ export const ORDER_TYPES = {
 };
 
 export const ORDER_TYPE_NAMES = {
-  ID_ASC: 'ID_ASC',
-  ID_DESC: 'ID_DESC',
-  ACCEPTANCE_ASC: 'ACCEPTANCE_ASC',
-  ACCEPTANCE_DESC: 'ACCEPTANCE_DESC',
-  DIFFCULTY_ASC: 'DIFFCULTY_ASC',
-  DIFFCULTY_DESC: 'DIFFCULTY_DESC',
+  ID_ASC: 'Sort By Id Asc',
+  ID_DESC: 'Sort By Id Desc',
+  ACCEPTANCE_ASC: 'Sort By Acceptance Asc',
+  ACCEPTANCE_DESC: 'Sort By Acceptance Desc',
+  DIFFCULTY_ASC: 'Sort By Diffculty Asc',
+  DIFFCULTY_DESC: 'Sort By Diffculty Desc',
 };
 
 const ORDER_SORT_FUNCS = {

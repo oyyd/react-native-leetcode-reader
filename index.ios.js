@@ -28,9 +28,7 @@ class leetcode extends Component {
     })();
 
     this.state = {
-      // TODO:
-      // activeRouteTitle: 'Algorithms',
-      activeRouteTitle: 'Local',
+      activeRouteTitle: 'Algorithms',
     };
   }
 

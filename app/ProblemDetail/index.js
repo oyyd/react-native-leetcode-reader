@@ -35,7 +35,7 @@ class ProblemDetail extends Component{
 
     this.state = {
       problemDetail: local[id] ? local[id] : null,
-      questionContentHeight: 0,
+      questionContentHeight: 1000,
     };
     this.hasMounted = true;
 

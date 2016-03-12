@@ -18,12 +18,13 @@ const { string, func, bool, } = PropTypes;
 const MAX_TITLE_LENGTH = 19;
 const ICON_SIZE = 24;
 const ICON_COLOR = '#FFFFFF';
+const ORDER_TYPE_KEYS = Object.keys(ORDER_TYPE_NAMES);
 const ACTION_SHEET_OPTIONS = {
   options: Object.values(ORDER_TYPE_NAMES).concat([
-    'cancel',
+    'Cancel',
   ]),
   // TODO: destructiveButtonIndex
-  cancelButtonIndex: ORDER_TYPE_NAMES.length,
+  cancelButtonIndex: ORDER_TYPE_KEYS.length,
 };
 
 class NavigationBar extends Component {
@@ -50,8 +51,8 @@ class NavigationBar extends Component {
 
   changeOrderType() {
     ActionSheetIOS.showActionSheetWithOptions(ACTION_SHEET_OPTIONS, index => {
-      if (this.props.changeOrderType) {
-        this.props.changeOrderType(Object.keys(ORDER_TYPE_NAMES)[index]);
+      if (index < ORDER_TYPE_KEYS.length && this.props.changeOrderType) {
+        this.props.changeOrderType(ORDER_TYPE_KEYS[index]);
       }
     });
   }

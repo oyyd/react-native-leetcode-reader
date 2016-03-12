@@ -4,17 +4,17 @@ Read LeetCode problems in your iOS devices and save them at local.
 
 ## Preview
 
-__Problem List__
-![preview problem list](./readme-img/list.png)
+__Read Problems__
 
-__Problem Detail__
-![preview problem detail](./readme-img/detail.png)
+![preview problem list](./readme-img/read_problems.gif)
 
-__Discuss (simply WebView)__
-![preview discuss](./readme-img/discuss.png)
+__Filters__
 
-__Reading Offline__
-![preview reading offline](./readme-img/preservation.png)
+![preview problem detail](./readme-img/filter.gif)
+
+__Save at Local__
+
+![preview discuss](./readme-img/save_at_local.gif)
 
 ## Setup
 
@@ -23,3 +23,7 @@ Clone this repo and run:
 ```
 npm install
 ```
+
+## Run
+
+Open `leetcode.xcodeproj` in `XCode` and run.
